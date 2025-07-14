@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis IPA: Listrik Statis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+            position: relative;
+        }
+        .header-main-title {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        h1 {
+            color: #0056b3;
+            margin: 0;
+            font-size: 2.2em;
+        }
+        .author-info {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .author-info p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .author-info p:first-child {
+            font-weight: bold;
+            color: #333;
+            font-size: 1em;
+        }
+        .header-image {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0056b3;
+            z-index: 10;
+        }
+        .left-header-image {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid #0056b3;
+            z-index: 10;
+        }
+        h2 {
+            color: #0056b3;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"], select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .question {
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .question p {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: normal;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #timer {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #d9534f;
+            margin-bottom: 15px;
+            text-align: right;
+        }
+        #timeLimitDisplay {
+            text-align: right;
+            font-weight: bold;
+            margin-bottom: 5px;
+            margin-top: 50px;
+        }
+        #results {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #e9ecef;
+            display: none;
+        }
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+        .incorrect {
+            color: red;
+            font-weight: bold;
+        }
+        .cooldown-message {
+            text-align: center;
+            font-size: 1.2em;
+            color: #d9534f;
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #d9534f;
+            border-radius: 5px;
+            background-color: #ffe0e0;
+        }
+        @media (max-width: 600px) {
+            .header-image, .left-header-image {
+                position: static;
+                margin: 10px auto;
+                display: block;
+            }
+            .header-main-title, .author-info {
+                text-align: center;
+            }
+            .container {
+                position: static;
+            }
+            #timeLimitDisplay {
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-main-title">
+            <h1>Kuis IPA: Listrik Statis</h1>
+        </div>
+        <div class="author-info">
+            <p>By. Torus Manuntun Nababan, S.Pd.,M.Pd</p>
+            <p>(Pengembang Soal Kuis)</p>
+        </div>
+        <img src="logo.png" alt="Foto Torus Manuntun Nababan, S.Pd.,M.Pd" class="header-image">
+        <img src="jas.jpg" alt="Ilustrasi Jas" class="left-header-image">
+
+        <p id="timeLimitDisplay">Waktu pengerjaan: <span id="timeLimit">30</span> menit</p>
+        <div id="timer">Waktu tersisa: 30:00</div>
+
+        <form id="quizForm">
+            <h2>Identitas Siswa</h2>
+            <div class="form-group">
+                <label for="sekolah">Nama Sekolah:</label>
+                <input type="text" id="sekolah" name="sekolah" required>
+            </div>
+            <div class="form-group">
+                <label for="nama">Nama Siswa:</label>
+                <input type="text" id="nama" name="nama" required>
+            </div>
+            <div class="form-group">
+                <label for="kelas">Kelas:</label>
+                <input type="text" id="kelas" name="kelas" required>
+            </div>
+            <div class="form-group">
+                <label for="semester">Semester:</label>
+                <select id="semester" name="semester" required>
+                    <option value="">Pilih Semester</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tahunAjaran">Tahun Ajaran:</label>
+                <input type="text" id="tahunAjaran" name="tahunAjaran" placeholder="Contoh: 2024/2025" required>
+            </div>
+
+            <hr>
+
+            <h2>Soal Kuis</h2>
+            <div id="questionsContainer">
+                </div>
+
+            <button type="submit">Selesai Kuis</button>
+        </form>
+
+        <div id="results">
+            <h2>Hasil Kuis</h2>
+            <p><strong>Nama Siswa:</strong> <span id="resultNama"></span></p>
+            <p><strong>Skor Anda:</strong> <span id="score"></span></p>
+            <p id="message"></p>
+            <h3>Detail Jawaban:</h3>
+            <div id="answerDetails">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // Muatan Listrik dan Gejala Listrik Statis (14 soal)
+            {
+                topic: "Listrik Statis: Muatan dan Gejala",
+                question: "Listrik statis adalah listrik yang diam atau tidak mengalir.",
+                options: ["Benar", "Salah", "Listrik dinamis", "Listrik arus"],
+                answer: "Benar"
+            },
+            {
+                topic: "Listrik Statis: Muatan dan Gejala",
+                question: "Ada dua jenis muatan listrik, yaitu muatan positif dan muatan...",
+                options: ["Netral", "Negatif", "Bebas", "Tunggal"],
+                answer: "Negatif"
+            },
+            {
+                topic: "Listrik Statis: Muatan dan Gejala",
+                question: "Jika dua benda memiliki muatan yang sama (misalnya positif dengan positif), mereka akan...",
+                options: ["Tarik-menarik", "Tolak-menolak", "Netral", "Menempel"],
+                answer: "Tolak-menolak"
+            },
+            {
+                topic: "Listrik Statis: Muatan dan Gejala",
+                question: "Jika dua benda memiliki muatan yang berbeda (positif dengan negatif), mereka akan...",
+                options: ["Tarik-menarik", "Tolak-menolak", "Netral", "Menempel"],
+                answer: "Tarik-menarik"
+            },
+            {
+                topic: "Listrik Statis: Muatan dan Gejala",
+                question: "Ketika kamu menggosokkan penggaris plastik ke rambut kering, penggaris tersebut dapat menarik potongan kertas kecil. Ini adalah contoh...",
+                options: ["Listrik dinamis", "Listrik statis", "Magnet", "Panas"],
+                answer: "Listrik statis"
+            },
+            {
+                topic: "Listrik Statis: Muatan dan Gejala",
+                question: "Bagian atom yang memiliki muatan positif disebut...",
+                options: ["Elektron", "Proton", "Netron", "Atom"],
+                answer: "Proton"
+            },
+            {
+                topic: "Listrik Statis: Muatan dan Gejala",
+                question: "Bagian atom yang memiliki muatan negatif dan dapat berpindah disebut...",
+                options: ["Proton", "Elektron", "Netron", "Inti"],
+                answer: "Elektron"
+            },
+            {
+                topic: "Listrik Statis: Muatan dan Gejala",
+                question: "Petir adalah contoh gejala listrik statis yang sangat besar di alam.",
+                options: ["Benar", "Salah", "Listrik dinamis", "Bukan listrik"],
+                answer: "Benar"
+            },
+            {
+                topic: "Listrik Statis: Muatan dan Gejala",
+                question: "Muatan netral berarti jumlah proton sama dengan jumlah...",
+                options: ["Elektron", "Netron", "Atom", "Molekul"],
+                answer: "Elektron"
+            },
+            {
+                topic: "Listrik Statis: Muatan dan Gejala",
+                question: "Jika sebuah benda kekurangan elektron, benda itu bermuatan...",
+                options: ["Negatif", "Positif", "Netral", "Bebas"],
+                answer: "Positif"
+            },
+            {
+                topic: "Listrik Statis: Muatan dan Gejala",
+                question: "Ketika kamu menyisir rambut dan sisir dapat menarik rambutmu, ini disebabkan oleh...",
+                options: ["Magnet", "Panas", "Gesekan dan listrik statis", "Listrik dinamis"],
+                answer: "Gesekan dan listrik statis"
+            },
+            {
+                topic: "Listrik Statis: Muatan dan Gejala",
+                question: "Benda bermuatan negatif artinya benda tersebut kelebihan elektron.",
+                options: ["Benar", "Salah", "Kekurangan proton", "Kekurangan netron"],
+                answer: "Benar"
+            },
+            {
+                topic: "Listrik Statis: Muatan dan Gejala",
+                question: "Gesekan antara dua benda dapat menyebabkan perpindahan elektron dan menghasilkan listrik statis.",
+                options: ["Benar", "Salah", "Hanya perpindahan proton", "Hanya pada benda logam"],
+                answer: "Benar"
+            },
+            {
+                topic: "Listrik Statis: Muatan dan Gejala",
+                question: "Bahan seperti plastik dan karet yang tidak mudah menghantarkan listrik disebut...",
+                options: ["Konduktor", "Isolator", "Semikonduktor", "Metal"],
+                answer: "Isolator"
+            },
+
+            // Hukum Coulomb (Pengantar) (6 soal)
+            {
+                topic: "Listrik Statis: Hukum Coulomb",
+                question: "Hukum Coulomb menjelaskan tentang gaya yang bekerja antara dua muatan listrik.",
+                options: ["Benar", "Salah", "Menjelaskan gaya gravitasi", "Menjelaskan panas"],
+                answer: "Benar"
+            },
+            {
+                topic: "Listrik Statis: Hukum Coulomb",
+                question: "Menurut Hukum Coulomb, gaya tarik atau tolak antara dua muatan akan semakin besar jika jarak antara keduanya...",
+                options: ["Semakin jauh", "Semakin dekat", "Tidak berpengaruh", "Sama"],
+                answer: "Semakin dekat"
+            },
+            {
+                topic: "Listrik Statis: Hukum Coulomb",
+                question: "Gaya Coulomb juga dipengaruhi oleh besarnya muatan. Jika muatan semakin besar, gaya akan semakin...",
+                options: ["Kecil", "Besar", "Tetap", "Netral"],
+                answer: "Besar"
+            },
+            {
+                topic: "Listrik Statis: Hukum Coulomb",
+                question: "Jika dua muatan berjarak 2 cm dan saling tolak, jika jaraknya diperbesar menjadi 4 cm, gaya tolaknya akan...",
+                options: ["Meningkat", "Menurun", "Tetap sama", "Menjadi tarik"],
+                answer: "Menurun"
+            },
+            {
+                topic: "Listrik Statis: Hukum Coulomb",
+                question: "Jika gaya Coulomb bersifat tarik-menarik, ini berarti kedua muatan tersebut...",
+                options: ["Sama jenis", "Berbeda jenis", "Netral", "Tidak ada muatan"],
+                answer: "Berbeda jenis"
+            },
+            {
+                topic: "Listrik Statis: Hukum Coulomb",
+                question: "Hukum Coulomb digunakan untuk menghitung besar gaya listrik statis.",
+                options: ["Benar", "Salah", "Hanya untuk listrik dinamis", "Hanya untuk magnet"],
+                answer: "Benar"
+            }
+        ];
+
+        const timeLimitInMinutes = 30; 
+        let timeLeft = timeLimitInMinutes * 60; // seconds
+        let timerInterval;
+
+        const quizForm = document.getElementById('quizForm');
+        const questionsContainer = document.getElementById('questionsContainer');
+        const timerDisplay = document.getElementById('timer');
+        const resultsDiv = document.getElementById('results');
+        const resultNama = document.getElementById('resultNama');
+        const scoreDisplay = document.getElementById('score');
+        const messageDisplay = document.getElementById('message');
+        const answerDetailsDiv = document.getElementById('answerDetails');
+
+        // Durasi cooldown: 1 jam dalam milidetik
+        const cooldownDuration = 60 * 60 * 1000;
+        const lastQuizCompletionKey = 'lastQuizCompletionTime';
+
+        // Fungsi untuk mengacak array (algoritma Fisher-Yates)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Fungsi untuk menghasilkan dan menampilkan pertanyaan
+        function generateQuestions() {
+            // Pastikan jumlah soal adalah 20
+            if (questions.length !== 20) {
+                console.error("Jumlah soal tidak sesuai (harus 20).");
+            }
+            
+            shuffleArray(questions);
+            questionsContainer.innerHTML = '';
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+
+                const shuffledOptions = [...q.options];
+                shuffleArray(shuffledOptions);
+
+                questionDiv.innerHTML = `
+                    <p>${index + 1}. ${q.question}</p>
+                    <div class="options">
+                        ${shuffledOptions.map((option) => `
+                            <label>
+                                <input type="radio" name="q${index}" value="${option}"> ${option}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                questionsContainer.appendChild(questionDiv);
+            });
+        }
+
+        // Fungsi untuk memulai timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.textContent = `Waktu tersisa: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Waktu habis! Kuis akan otomatis disubmit.");
+                    quizForm.dispatchEvent(new Event('submit'));
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        // Penanganan saat formulir disubmit
+        quizForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            clearInterval(timerInterval);
+
+            let totalScore = 0;
+            const pointsPerCorrect = 5; // 5 poin per soal
+            const maxPossibleScore = questions.length * pointsPerCorrect; // 20 * 5 = 100
+
+            const answers = {};
+
+            questions.forEach((q, index) => {
+                const selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+                const userAnswer = selectedOption ? selectedOption.value : null;
+                answers[`q${index}`] = userAnswer;
+
+                if (userAnswer === q.answer) {
+                    totalScore += pointsPerCorrect;
+                }
+            });
+
+            // Simpan waktu penyelesaian kuis ke Local Storage
+            localStorage.setItem(lastQuizCompletionKey, Date.now());
+
+            // Tampilkan hasil
+            resultNama.textContent = document.getElementById('nama').value;
+            scoreDisplay.textContent = `${totalScore} / ${maxPossibleScore}`;
+
+            // Tentukan pesan berdasarkan skor
+            // Nilai Pemenang ditentukan oleh skor >= 70
+            if (totalScore >= 70) { 
+                messageDisplay.textContent = "Selamat Anda Pemenang";
+                messageDisplay.style.color = "green";
+            } else {
+                messageDisplay.textContent = "Anda Belum Beruntung, Belajar Lagi Ya";
+                messageDisplay.style.color = "red";
+            }
+
+            // Tampilkan detail jawaban
+            answerDetailsDiv.innerHTML = '';
+            questions.forEach((q, index) => {
+                const userAnswer = answers[`q${index}`];
+                const detailDiv = document.createElement('p');
+                let answerStatusClass = '';
+                let userAnswerText = userAnswer !== null ? userAnswer : 'Tidak dijawab';
+
+                if (userAnswer === q.answer) {
+                    answerStatusClass = 'correct';
+                } else if (userAnswer !== null) {
+                    answerStatusClass = 'incorrect';
+                } else {
+                    answerStatusClass = '';
+                }
+
+                detailDiv.innerHTML = `
+                    <strong>${index + 1}. ${q.question}</strong><br>
+                    Jawaban Anda: <span class="${answerStatusClass}">
+                        ${userAnswerText}
+                    </span><br>
+                    Kunci Jawaban: <span class="correct">${q.answer}</span>
+                `;
+                answerDetailsDiv.appendChild(detailDiv);
+            });
+
+            quizForm.style.display = 'none';
+            resultsDiv.style.display = 'block';
+        });
+
+        // Inisialisasi kuis dan cek cooldown saat halaman dimuat
+        window.onload = function() {
+            const lastCompletionTime = localStorage.getItem(lastQuizCompletionKey);
+            if (lastCompletionTime) {
+                const timeElapsed = Date.now() - parseInt(lastCompletionTime);
+                if (timeElapsed < cooldownDuration) {
+                    const remainingTime = cooldownDuration - timeElapsed;
+                    const minutes = Math.floor(remainingTime / (1000 * 60));
+                    const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+                    quizForm.style.display = 'none';
+                    timerDisplay.style.display = 'none';
+                    document.getElementById('timeLimitDisplay').style.display = 'none';
+                    const cooldownMessageDiv = document.createElement('div');
+                    cooldownMessageDiv.classList.add('cooldown-message');
+                    cooldownMessageDiv.innerHTML = `
+                        Anda telah menyelesaikan kuis ini. <br>
+                        Silakan coba lagi dalam **${minutes.toString().padStart(2, '0')} menit dan ${seconds.toString().padStart(2, '0')} detik**.
+                    `;
+                    document.querySelector('.container').insertBefore(cooldownMessageDiv, document.getElementById('quizForm'));
+                    return;
+                }
+            }
+            // Jika tidak ada cooldown atau cooldown sudah berakhir, inisialisasi kuis
+            generateQuestions();
+            startTimer();
+        };
+    </script>
+</body>
+</html>
